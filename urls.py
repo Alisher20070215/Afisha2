@@ -64,3 +64,33 @@ return Response(
             },
             status=201
         )
+
+if request.method == 'PUT':
+        news.directors = request.data.get('directors', news.movies)
+        news.movies = request.data.get('movies', news.movies)
+        news.reviews = request.data.get('reviews', news.reviews)
+        news.category_id = request.data.get('category_id', news.category_id)
+
+        tags = request.data.get('tags', news.tag.all())
+        news.tag.set(tags)
+
+        news.save()
+
+        serializer = NewsDetailSerializer(instance=news, many=False)
+
+        return Response(
+            data={
+                "message": "updated!",
+                "data": serializer.data
+            },
+            status=200
+        )
+
+    if request.method == 'DELETE': 
+        news.delete()
+        return Response(
+            data={
+                'message': 'deleted'
+            },
+            status=204
+        )
